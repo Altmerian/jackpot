@@ -4,4 +4,77 @@ server:
 spring:
   application:
     name: jackpot-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:h2:mem:jackpot;MODE=PostgreSQL;DATABASE_TO_UPPER=false;DB_CLOSE_DELAY=-1}
+    username: ${SPRING_DATASOURCE_USERNAME:sa}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
+    consumer:
+      group-id: jackpot-contribution-consumer
+      properties:
+        specific.avro.reader: true
+        schema.registry.url: ${SCHEMA_REGISTRY_URL:http://localhost:8081}
+      auto-offset-reset: earliest
+    producer:
+      transaction-id-prefix: jackpot-producer
+      properties:
+        schema.registry.url: ${SCHEMA_REGISTRY_URL:http://localhost:8081}
+        value.subject.name.strategy: io.confluent.kafka.serializers.subject.TopicRecordNameStrategy
+        enable.idempotence: true
+    properties:
+      schema.registry.url: ${SCHEMA_REGISTRY_URL:http://localhost:8081}
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+logging:
+  level:
+    com.pshakhlovich.jackpot: INFO
+    org.apache.kafka: WARN
+
+jackpot:
+  profiles:
+    - id: fixed-warmup
+      name: Fixed Warmup
+      initialPool: 500.00
+      contributionStrategy: FIXED_RATE
+      rewardStrategy: FIXED
+      contribution:
+        rate: 0.10
+      reward:
+        baseProbability: 0.05
+        maxProbability: 0.05
+        rampRate: 0.00
+        cap: 1000.00
+    - id: decaying-marathon
+      name: Decaying Marathon
+      initialPool: 1000.00
+      contributionStrategy: VARIABLE_DECAY
+      rewardStrategy: VARIABLE_RAMP
+      contribution:
+        rate: 0.12
+        minRate: 0.04
+        decayThreshold: 10000.00
+        decaySlope: 0.08
+      reward:
+        baseProbability: 0.02
+        maxProbability: 0.50
+        rampRate: 0.20
+        cap: 5000.00
   

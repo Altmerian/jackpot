@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "name": "Bet",
+  "namespace": "com.pshakhlovich.jackpot.avro",
+  "fields": [
+    { "name": "betId", "type": "string" },
+    { "name": "userId", "type": "string" },
+    { "name": "jackpotId", "type": "string" },
+    { "name": "betAmount", "type": "double" },
+    { "name": "createdAt", "type": { "type": "long", "logicalType": "timestamp-millis" } }
+  ]
+}
