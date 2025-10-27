@@ -23,11 +23,13 @@ public class ContributionService {
     private final JackpotContributionRepository contributionRepository;
     private final StrategyRegistry strategyRegistry;
 
-    @Transactional(transactionManager = "transactionManager")
+    @Transactional("transactionManager")
     public void applyContribution(Bet bet) {
         BigDecimal betAmount = BigDecimal.valueOf(bet.getBetAmount()).setScale(2, RoundingMode.HALF_UP);
 
-        Jackpot jackpot = jackpotRepository.findById(bet.getJackpotId())
+        // Load jackpot with pessimistic write lock to ensure exclusive access during pool updates
+        // This prevents race conditions in concurrent contribution processing
+        Jackpot jackpot = jackpotRepository.findByIdForUpdate(bet.getJackpotId())
                 .orElseThrow(() -> new IllegalArgumentException("Jackpot %s not found".formatted(bet.getJackpotId())));
 
         ContributionStrategy strategy = strategyRegistry.getContributionStrategy(jackpot.getContributionStrategy());

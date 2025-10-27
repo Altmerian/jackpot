@@ -25,15 +25,16 @@ public class JackpotEvaluationService {
     private final JackpotRewardRepository rewardRepository;
     private final StrategyRegistry strategyRegistry;
 
-    @Transactional(transactionManager = "transactionManager")
+    @Transactional("transactionManager")
     public RewardResult evaluate(String betId, String jackpotId) {
         // Verify bet contribution exists
-        JackpotContribution contribution = contributionRepository.findByBetIdAndJackpotId(betId, jackpotId)
+        contributionRepository.findByBetIdAndJackpotId(betId, jackpotId)
                 .orElseThrow(() -> new IllegalArgumentException(
                         "No contribution found for betId=%s and jackpotId=%s".formatted(betId, jackpotId)));
 
-        // Load jackpot
-        Jackpot jackpot = jackpotRepository.findById(jackpotId)
+        // Load jackpot with pessimistic write lock to prevent concurrent evaluation race conditions
+        // Lock timeout is 5 seconds - concurrent requests will wait in queue and be evaluated sequentially
+        Jackpot jackpot = jackpotRepository.findByIdForUpdate(jackpotId)
                 .orElseThrow(() -> new IllegalArgumentException("Jackpot %s not found".formatted(jackpotId)));
 
         // Generate deterministic random draw

@@ -12,7 +12,7 @@ public class JackpotService {
 
     private final JackpotRepository jackpotRepository;
 
-    @Transactional(readOnly = true, transactionManager = "transactionManager")
+    @Transactional(value = "transactionManager", readOnly = true)
     public Jackpot getRequired(String jackpotId) {
         return jackpotRepository.findById(jackpotId)
                 .orElseThrow(() -> new IllegalArgumentException("Jackpot %s not found".formatted(jackpotId)));

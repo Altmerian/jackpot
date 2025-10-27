@@ -11,7 +11,7 @@ Backend service for managing jackpot contributions and rewards.
 
 1. **Start Kafka infrastructure:**
    ```bash
-   docker compose up -d
+   docker compose up --build -d
    ```
 
 2. **Build and run the service:**
@@ -90,6 +90,7 @@ curl "http://localhost:8080/api/evaluations?betId=bet-001&jackpotId=fixed-warmup
 ✅ REST API endpoint to evaluate jackpot rewards
 ✅ Pool reset when jackpot is won
 ✅ H2 in-memory database for persistence
+✅ Locking to prevent concurrent evaluation issues
 ✅ Deterministic outcomes for testing
 
 ## Configuration
@@ -140,7 +141,7 @@ The system uses the **Strategy Pattern** to support multiple configurations:
 - New contribution strategies can be added by implementing `ContributionStrategy` interface
 - New reward strategies can be added by implementing `RewardStrategy` interface
 - Strategies are registered in `StrategyRegistry` and selected based on jackpot configuration
-- No code changes needed to use new strategies—just configure them in `application.yml`
+- No code changes needed to add new profiles for existing strategies types, just configuration in the `application.yml`
 
 ## Health Check
 

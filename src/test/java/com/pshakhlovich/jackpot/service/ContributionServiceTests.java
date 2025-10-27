@@ -55,7 +55,7 @@ class ContributionServiceTests {
                 .currentPool(new BigDecimal("500.00"))
                 .build();
 
-        when(jackpotRepository.findById("fixed-warmup")).thenReturn(Optional.of(jackpot));
+        when(jackpotRepository.findByIdForUpdate("fixed-warmup")).thenReturn(Optional.of(jackpot));
 
         Bet bet = Bet.newBuilder()
                 .setBetId("bet-123")
@@ -91,7 +91,7 @@ class ContributionServiceTests {
                 .currentPool(new BigDecimal("2000.00"))
                 .build();
 
-        when(jackpotRepository.findById("decaying-marathon")).thenReturn(Optional.of(jackpot));
+        when(jackpotRepository.findByIdForUpdate("decaying-marathon")).thenReturn(Optional.of(jackpot));
 
         Bet bet = Bet.newBuilder()
                 .setBetId("bet-456")

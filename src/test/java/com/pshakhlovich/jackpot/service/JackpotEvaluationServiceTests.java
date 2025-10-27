@@ -75,7 +75,7 @@ class JackpotEvaluationServiceTests {
 
         when(contributionRepository.findByBetIdAndJackpotId(betId, jackpotId))
                 .thenReturn(Optional.of(contribution));
-        when(jackpotRepository.findById(jackpotId)).thenReturn(Optional.of(jackpot));
+        when(jackpotRepository.findByIdForUpdate(jackpotId)).thenReturn(Optional.of(jackpot));
 
         // When: Evaluate (deterministic RNG with high probability will produce win)
         RewardResult result = evaluationService.evaluate(betId, jackpotId);
@@ -109,7 +109,7 @@ class JackpotEvaluationServiceTests {
 
         when(contributionRepository.findByBetIdAndJackpotId(betId, jackpotId))
                 .thenReturn(Optional.of(contribution));
-        when(jackpotRepository.findById(jackpotId)).thenReturn(Optional.of(jackpot));
+        when(jackpotRepository.findByIdForUpdate(jackpotId)).thenReturn(Optional.of(jackpot));
 
         // When: Evaluate (deterministic RNG will produce value > 0.000001)
         RewardResult result = evaluationService.evaluate(betId, jackpotId);
@@ -144,7 +144,7 @@ class JackpotEvaluationServiceTests {
 
         when(contributionRepository.findByBetIdAndJackpotId(betId, jackpotId))
                 .thenReturn(Optional.of(contribution));
-        when(jackpotRepository.findById(jackpotId)).thenReturn(Optional.of(jackpot));
+        when(jackpotRepository.findByIdForUpdate(jackpotId)).thenReturn(Optional.of(jackpot));
 
         // When: Evaluate (high pool ratio -> high probability)
         RewardResult result = evaluationService.evaluate(betId, jackpotId);
@@ -180,7 +180,7 @@ class JackpotEvaluationServiceTests {
 
         when(contributionRepository.findByBetIdAndJackpotId(betId, jackpotId))
                 .thenReturn(Optional.of(contribution));
-        when(jackpotRepository.findById(jackpotId)).thenReturn(Optional.of(jackpot));
+        when(jackpotRepository.findByIdForUpdate(jackpotId)).thenReturn(Optional.of(jackpot));
 
         // When: Evaluate (low pool ratio -> low probability)
         RewardResult result = evaluationService.evaluate(betId, jackpotId);
@@ -212,14 +212,14 @@ class JackpotEvaluationServiceTests {
 
         when(contributionRepository.findByBetIdAndJackpotId(betId, jackpotId))
                 .thenReturn(Optional.of(contribution));
-        when(jackpotRepository.findById(jackpotId)).thenReturn(Optional.of(jackpot));
+        when(jackpotRepository.findByIdForUpdate(jackpotId)).thenReturn(Optional.of(jackpot));
 
         // When: Evaluate multiple times
         RewardResult result1 = evaluationService.evaluate(betId, jackpotId);
 
         // Reset jackpot pool for second evaluation (simulating same initial state)
         jackpot.setCurrentPool(new BigDecimal("1000.00"));
-        when(jackpotRepository.findById(jackpotId)).thenReturn(Optional.of(jackpot));
+        when(jackpotRepository.findByIdForUpdate(jackpotId)).thenReturn(Optional.of(jackpot));
 
         RewardResult result2 = evaluationService.evaluate(betId, jackpotId);
 
@@ -254,7 +254,7 @@ class JackpotEvaluationServiceTests {
 
         when(contributionRepository.findByBetIdAndJackpotId(betId, jackpotId))
                 .thenReturn(Optional.of(contribution));
-        when(jackpotRepository.findById(jackpotId)).thenReturn(Optional.empty());
+        when(jackpotRepository.findByIdForUpdate(jackpotId)).thenReturn(Optional.empty());
 
         // When/Then: Exception thrown
         assertThatThrownBy(() -> evaluationService.evaluate(betId, jackpotId))

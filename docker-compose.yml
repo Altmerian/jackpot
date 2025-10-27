@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   kafka:
-    image: confluentinc/cp-kafka:7.7.0
+    image: confluentinc/cp-kafka:7.9.4
     container_name: jackpot-kafka
     ports:
       - "9092:9092"
@@ -25,7 +25,7 @@ services:
       CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:7.7.0
+    image: confluentinc/cp-schema-registry:7.9.4
     container_name: jackpot-schema-registry
     depends_on:
       - kafka
@@ -35,16 +35,3 @@ services:
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka:29092
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
-
-  kpow:
-    image: factorhouse/kpow:latest
-    container_name: jackpot-kpow
-    depends_on:
-      - kafka
-      - schema-registry
-    ports:
-      - "3000:3000"
-    environment:
-      KAFKA_BROKERS: PLAINTEXT://kafka:29092
-      KAFKA_PROPERTIES_SSL_ENABLED: "false"
-      SCHEMA_REGISTRY_URL: http://schema-registry:8081

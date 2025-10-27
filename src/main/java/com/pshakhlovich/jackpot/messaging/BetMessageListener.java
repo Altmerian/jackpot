@@ -17,7 +17,7 @@ public class BetMessageListener {
 
     private final ContributionService contributionService;
 
-    @Transactional(transactionManager = "transactionManager")
+    @Transactional("transactionManager")
     @KafkaListener(topics = KafkaTopicsConfig.BETS_TOPIC, containerFactory = "betListenerContainerFactory")
     public void onBet(@Payload Bet bet) {
         log.debug("Received bet {} for jackpot {}", bet.getBetId(), bet.getJackpotId());
