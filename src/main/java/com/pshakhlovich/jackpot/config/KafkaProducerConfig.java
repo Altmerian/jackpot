@@ -16,7 +16,7 @@ import org.springframework.kafka.core.ProducerFactory;
 @Configuration
 public class KafkaProducerConfig {
 
-    private static final String TRANSACTION_ID_PREFIX = "jackpot-producer";
+    private static final String DEFAULT_TRANSACTION_ID = "jackpot-producer";
 
     @Bean
     public ProducerFactory<String, Bet> betProducerFactory(KafkaProperties kafkaProperties) {
@@ -28,7 +28,9 @@ public class KafkaProducerConfig {
         props.put(ProducerConfig.RETRIES_CONFIG, 3);
         props.put(AbstractKafkaSchemaSerDeConfig.VALUE_SUBJECT_NAME_STRATEGY, TopicRecordNameStrategy.class);
         DefaultKafkaProducerFactory<String, Bet> factory = new DefaultKafkaProducerFactory<>(props);
-        factory.setTransactionIdPrefix(TRANSACTION_ID_PREFIX);
+        // Set transaction ID prefix from application.yml to enable transactional support
+        String transactionIdPrefix = kafkaProperties.getProducer().getTransactionIdPrefix();
+        factory.setTransactionIdPrefix(transactionIdPrefix != null ? transactionIdPrefix : DEFAULT_TRANSACTION_ID);
         return factory;
     }
 

@@ -2,6 +2,7 @@ package com.pshakhlovich.jackpot.service;
 
 import com.pshakhlovich.jackpot.avro.Bet;
 import com.pshakhlovich.jackpot.domain.model.Jackpot;
+import com.pshakhlovich.jackpot.domain.model.JackpotContribution;
 import com.pshakhlovich.jackpot.domain.strategy.StrategyRegistry;
 import com.pshakhlovich.jackpot.domain.strategy.contribution.ContributionStrategy;
 import com.pshakhlovich.jackpot.repository.JackpotContributionRepository;
@@ -35,7 +36,7 @@ public class ContributionService {
         ContributionStrategy strategy = strategyRegistry.getContributionStrategy(jackpot.getContributionStrategy());
         ContributionResult result = strategy.contribute(jackpot, betAmount);
 
-        contributionRepository.save(com.pshakhlovich.jackpot.domain.model.JackpotContribution.builder()
+        contributionRepository.save(JackpotContribution.builder()
                 .betId(bet.getBetId())
                 .jackpot(jackpot)
                 .betAmount(betAmount)

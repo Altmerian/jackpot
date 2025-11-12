@@ -1,7 +1,6 @@
 package com.pshakhlovich.jackpot.service;
 
 import com.pshakhlovich.jackpot.domain.model.Jackpot;
-import com.pshakhlovich.jackpot.domain.model.JackpotContribution;
 import com.pshakhlovich.jackpot.domain.model.JackpotReward;
 import com.pshakhlovich.jackpot.domain.strategy.StrategyRegistry;
 import com.pshakhlovich.jackpot.domain.strategy.reward.RewardStrategy;
